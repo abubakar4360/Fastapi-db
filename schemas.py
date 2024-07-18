@@ -11,20 +11,21 @@ class Employee(BaseModel):
     class Config:
         orm_mode = True
 
-class AdminCreate(BaseModel):
+class AdminBase(BaseModel):
     username: str
-    password: str
-
-class Admin(BaseModel):
-    username: str
-    password: str
 
     class Config:
         orm_mode = True
 
+class AdminCreate(AdminBase):
+    password: str
+
+class Admin(AdminBase):
+    id: int
+
 class Token(BaseModel):
     access_token: str
-    token_type: str
+    token_type: str = "bearer"
 
 class TokenData(BaseModel):
-    username: str | None = None
+    username: str
