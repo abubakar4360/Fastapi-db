@@ -8,7 +8,7 @@ import secrets
 from passlib.context import CryptContext
 
 from model import Employee as EmployeeModel, Admin as AdminModel
-from database import add_new_employee, delete_employee, get_db, add_admin, get_admin
+from database import add_new_employee, delete_employee, get_db, add_admin, get_admin, update_admin_password
 from schemas import Employee as EmployeeSchema, AdminCreate as AdminCreateSchema, Admin as AdminSchema, Token, TokenData
 
 
@@ -77,6 +77,16 @@ def create_admin(admin: AdminCreateSchema, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail='Username already registered')
     return add_admin(db, admin)
 
+@app.put('/admins/', response_model=AdminSchema)
+def update_password(username: str, current_password: str, new_password: str, db: Session = Depends(get_db)):
+    check_account = db.query(AdminModel).filter(AdminModel.username == username and AdminModel.hashed_password == current_password)
+    if check_account:
+        return update_admin_password(username, new_password, db)
+    elif db.query(AdminModel).filter(AdminModel.username == username):
+        raise HTTPException(status_code=404, detail='Password incorrect.')
+    else:
+        raise HTTPException(status_code=404, detail='Account does not exists!')
+
 @app.post('/add_employee/', response_model=EmployeeSchema)
 def create_employee(employee: EmployeeSchema, db: Session = Depends(get_db), current_admin: AdminModel = Depends(get_current_admin)):
     db_employee = db.query(EmployeeModel).filter(EmployeeModel.email == employee.email).first()
@@ -105,3 +115,4 @@ def read_employee(employee_id: int, db: Session = Depends(get_db), current_admin
     if employee is None:
         raise HTTPException(status_code=404, detail='Employee not found')
     return employee
+

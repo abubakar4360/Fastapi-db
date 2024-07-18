@@ -55,6 +55,18 @@ def add_admin(db: Session, admin: AdminCreateSchema):
     db.refresh(db_admin)
     return db_admin
 
+def update_admin_password(username: str, new_password: str, db: Session):
+    admin = db.query(AdminModel).filter(AdminModel.username == username).first()
+    if admin:
+        hashed_password = get_password_hash(new_password)
+        admin.hashed_password = hashed_password
+        db.commit()
+        db.refresh(admin)
+        return admin
+    return None
+
+
 def get_admin(db: Session, username: str):
     return db.query(AdminModel).filter(AdminModel.username == username).first()
+
 

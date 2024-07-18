@@ -20,3 +20,4 @@ class Employee(Base):
     salary = Column(Integer)
     role = Column(String)
 
+
