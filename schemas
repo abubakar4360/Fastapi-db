@@ -1,18 +1,12 @@
 from pydantic import BaseModel
 import datetime
 
-class UserBase(BaseModel):
+class UserCreate(BaseModel):
     first_name: str
     last_name: str
     username: str
     email: str
     password: str
-
-class UserCreate(UserBase):
-    password: str
-
-class User(UserBase):
-    id: int
 
 class ChangePassword(BaseModel):
     email: str
@@ -40,6 +34,7 @@ class Employee(BaseModel):
 
 class Token(BaseModel):
     access_token: str
+    token_type: str = "bearer"
     refresh_token: str
 
 class Data(BaseModel):
