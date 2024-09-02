@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn {
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        nav {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+        }
+        nav button {
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        nav button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Employee Management System</h1>
+    </header>
+    <div class="container">
+        <!-- Login / Signup / Forget Password Forms -->
+        <div id="auth-forms">
+            <div id="login-form" class="form-group">
+                <h2>Login</h2>
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" placeholder="Enter Username" required>
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="Enter Password" required>
+                <button class="btn" onclick="login()">Login</button>
+                <p><a href="#" onclick="showSignupForm()">Don't have an account? Sign Up</a></p>
+                <p><a href="#" onclick="showForgetPasswordForm()">Forgot Password?</a></p>
+            </div>
+
+            <div id="signup-form" class="form-group hidden">
+                <h2>Sign Up</h2>
+                <label for="signup-name">Name</label>
+                <input type="text" id="signup-name" placeholder="Enter Name" required>
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" placeholder="Enter Email" required>
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" placeholder="Enter Password" required>
+                <button class="btn" onclick="signup()">Sign Up</button>
+                <p><a href="#" onclick="showLoginForm()">Already have an account? Login</a></p>
+            </div>
+
+            <div id="forget-password-form" class="form-group hidden">
+                <h2>Forgot Password</h2>
+                <label for="forget-email">Email</label>
+                <input type="email" id="forget-email" placeholder="Enter Email" required>
+                <button class="btn" onclick="forgotPassword()">Send Reset Link</button>
+                <p><a href="#" onclick="showLoginForm()">Back to Login</a></p>
+            </div>
+        </div>
+
+        <!-- Reset Password Form -->
+        <div id="reset-password-form" class="form-group hidden">
+            <h2>Reset Password</h2>
+            <label for="reset-password">New Password</label>
+            <input type="password" id="reset-password" placeholder="Enter New Password" required>
+            <button class="btn" onclick="resetPassword()">Reset Password</button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="hidden">
+            <nav>
+                <button onclick="showAddEmployeeForm()">Add Employee</button>
+                <button onclick="viewEmployees()">View Employees</button>
+                <button onclick="showUpdateEmployeeForm()">Update Employee</button>
+                <button onclick="showDeleteEmployeeForm()">Delete Employee</button>
+                <button class="btn-danger" onclick="logout()">Logout</button>
+            </nav>
+
+            <!-- Add Employee Form -->
+            <div id="add-employee-form" class="form-group hidden">
+                <h2>Add Employee</h2>
+                <label for="employee-id">ID</label>
+                <input type="number" id="employee-id" placeholder="Enter Employee ID" required>
+                <label for="employee-name">Name</label>
+                <input type="text" id="employee-name" placeholder="Enter Employee Name" required>
+                <label for="employee-email">Email</label>
+                <input type="email" id="employee-email" placeholder="Enter Employee Email" required>
+                <button class="btn" onclick="addEmployee()">Add Employee</button>
+            </div>
+
+            <!-- Update Employee Form -->
+            <div id="update-employee-form" class="form-group hidden">
+                <h2>Update Employee</h2>
+                <label for="update-employee-id">ID</label>
+                <input type="number" id="update-employee-id" placeholder="Enter Employee ID" required>
+                <label for="update-employee-name">Name</label>
+                <input type="text" id="update-employee-name" placeholder="Enter New Name">
+                <label for="update-employee-email">Email</label>
+                <input type="email" id="update-employee-email" placeholder="Enter New Email">
+                <button class="btn" onclick="updateEmployee()">Update Employee</button>
+            </div>
+
+            <!-- Delete Employee Form -->
+            <div id="delete-employee-form" class="form-group hidden">
+                <h2>Delete Employee</h2>
+                <label for="delete-employee-id">ID</label>
+                <input type="number" id="delete-employee-id" placeholder="Enter Employee ID" required>
+                <button class="btn btn-danger" onclick="deleteEmployee()">Delete Employee</button>
+            </div>
+
+            <!-- View Employees -->
+            <div id="view-employees" class="hidden">
+                <h2>Employees List</h2>
+                <table id="employees-table" border="1" style="width: 100%; text-align: left;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let accessToken = null;
+
+        function showLoginForm() {
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('signup-form').classList.add('hidden');
+            document.getElementById('forget-password-form').classList.add('hidden');
+        }
+
+        function showSignupForm() {
+            document.getElementById('signup-form').classList.remove('hidden');
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('forget-password-form').classList.add('hidden');
+        }
+
+        function showForgetPasswordForm() {
+            document.getElementById('forget-password-form').classList.remove('hidden');
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-forms').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+        }
+
+        function showAddEmployeeForm() {
+            hideAllForms();
+            document.getElementById('add-employee-form').classList.remove('hidden');
+        }
+
+        function showUpdateEmployeeForm() {
+            hideAllForms();
+            document.getElementById('update-employee-form').classList.remove('hidden');
+        }
+
+        function showDeleteEmployeeForm() {
+            hideAllForms();
+            document.getElementById('delete-employee-form').classList.remove('hidden');
+        }
+
+        function hideAllForms() {
+            document.getElementById('add-employee-form').classList.add('hidden');
+            document.getElementById('update-employee-form').classList.add('hidden');
+            document.getElementById('delete-employee-form').classList.add('hidden');
+            document.getElementById('view-employees').classList.add('hidden');
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        username: username,
+                        password: password,
+                    }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    accessToken = data.access_token;
+                    showDashboard();
+                } else {
+                    alert('Login failed. Please check your credentials.');
+                }
+            } catch (error) {
+                console.error('Error logging in:', error);
+            }
+        }
+
+        async function signup() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password,
+                    }),
+                });
+
+                if (response.ok) {
+                    alert('Signup successful! Please verify your email.');
+                    showLoginForm();
+                } else {
+                    alert('Signup failed. User might already exist.');
+                }
+            } catch (error) {
+                console.error('Error signing up:', error);
+            }
+        }
+
+        async function forgotPassword() {
+            const email = document.getElementById('forget-email').value;
+
+            try {
+                const response = await fetch('/forget_password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        email: email,
+                    }),
+                });
+
+                if (response.ok) {
+                    alert('Password reset link sent to your email!');
+                    showLoginForm();
+                } else {
+                    alert('Error sending reset link.');
+                }
+            } catch (error) {
+                console.error('Error in forgot password:', error);
+            }
+        }
+
+        async function resetPassword() {
+            const newPassword = document.getElementById('reset-password').value;
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!token) {
+                alert('Invalid or missing token.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/reset_password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        token: token,
+                        new_password: newPassword,
+                    }),
+                });
+
+                if (response.ok) {
+                    alert('Password reset successful! You can now log in.');
+                    showLoginForm();
+                } else {
+                    alert('Error resetting password. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error resetting password:', error);
+            }
+        }
+
+
+        async function addEmployee() {
+            const id = document.getElementById('employee-id').value;
+            const name = document.getElementById('employee-name').value;
+            const email = document.getElementById('employee-email').value;
+
+            try {
+                const response = await fetch('/add_employee', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        id: parseInt(id),
+                        name: name,
+                        email: email,
+                    }),
+                });
+
+                if (response.ok) {
+                    alert('Employee added successfully!');
+                    document.getElementById('employee-id').value = '';
+                    document.getElementById('employee-name').value = '';
+                    document.getElementById('employee-email').value = '';
+                } else {
+                    alert('Error adding employee.');
+                }
+            } catch (error) {
+                console.error('Error adding employee:', error);
+            }
+        }
+
+        async function updateEmployee() {
+            const id = document.getElementById('update-employee-id').value;
+            const name = document.getElementById('update-employee-name').value;
+            const email = document.getElementById('update-employee-email').value;
+
+            try {
+                const response = await fetch('/update_employee', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        id: parseInt(id),
+                        name: name || null,
+                        email: email || null,
+                    }),
+                });
+
+                if (response.ok) {
+                    alert('Employee updated successfully!');
+                } else {
+                    alert('Error updating employee.');
+                }
+            } catch (error) {
+                console.error('Error updating employee:', error);
+            }
+        }
+
+        async function deleteEmployee() {
+            const id = document.getElementById('delete-employee-id').value;
+
+            try {
+                const response = await fetch('/delete_employee', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        id: parseInt(id),
+                    }),
+                });
+
+                if (response.ok) {
+                    alert('Employee deleted successfully!');
+                    document.getElementById('delete-employee-id').value = '';
+                } else {
+                    alert('Error deleting employee.');
+                }
+            } catch (error) {
+                console.error('Error deleting employee:', error);
+            }
+        }
+
+        async function viewEmployees() {
+            hideAllForms();
+            document.getElementById('view-employees').classList.remove('hidden');
+            const tableBody = document.getElementById('employees-table').querySelector('tbody');
+            tableBody.innerHTML = '';
+
+            try {
+                const response = await fetch('/get_employees', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const employees = await response.json();
+                    employees.forEach(employee => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${employee.id}</td><td>${employee.name}</td><td>${employee.email}</td>`;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    alert('Error fetching employees.');
+                }
+            } catch (error) {
+                console.error('Error fetching employees:', error);
+            }
+        }
+
+        function logout() {
+            accessToken = null;
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('auth-forms').classList.remove('hidden');
+            showLoginForm();
+        }
+    </script>
+</body>
+</html>
